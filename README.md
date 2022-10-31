@@ -12,6 +12,7 @@ The card V4.0 add the following features related to the optocoupled inputs:
 * 2 x Quadrature encoder inputs on in 1/2 and 3/4
 * PWM inputs on ech channel, reading the fill factor and frequency
 * The 4 LED's asignated to the inputs can be software controlled
+* Modbus RTU access for all features. 
 
 ## Setup (first usage of a Sequent Microsystems card)
  - Enable the I2C communication:
