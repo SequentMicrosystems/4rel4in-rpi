@@ -9,7 +9,7 @@ Example:
 ```bash
 ~$ 4rel4in 0 cfg485wr 1 9600 1 0 1
 ```
-Set Modbus RTU , Baudrate: 9600bps, 1 Stop Bit,  parity: None, slave address offset: 1
+Set Modbus RTU , Baudrate: 9600bps, 1 Stop Bit,  parity: None, slave address base: 1
 ```bash
 ~$ 4rel4in -h cfg485wr
 ```
