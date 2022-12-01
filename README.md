@@ -5,13 +5,15 @@
 # 4rel4in-rpi
 Drivers to control Sequent Microsystems [Four Relays four HV Inputs 8-Layer Stackable HAT for Raspberry Pi](https://sequentmicrosystems.com/collections/all-io-cards/products/four-relays-four-inputs-for-raspberry-pi) V 4.0 or higher
 
-The card V4.0 add the following features related to the optocoupled inputs:
-* Transitions count for ech inputs.
-* Filtred inputs state reading for AC signals input.
-* Pulse per seconds for the counters.
-* 2 x Quadrature encoder inputs on in 1/2 and 3/4
-* PWM inputs on ech channel, reading the fill factor and frequency
-* The 4 LED's asignated to the inputs can be software controlled
+The Version 4.0 of the card adds the following features related to the optocoupled inputs:
+
+ * Transitions counts for each input.
+ * Improved processing of AC input signals.
+ * Input counters with cumulative or pps (pulse per second) reading of input transitions.
+ * 2 x Quadrature encoder inputs.
+ * PWM inputs on each channel, reading the fill factor and frequency.
+ * Programmable LEDs for inputs.
+ * Modbus RTU access for all features.
 
 ## Setup (first usage of a Sequent Microsystems card)
  - Enable the I2C communication:
