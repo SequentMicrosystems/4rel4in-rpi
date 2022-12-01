@@ -1,4 +1,4 @@
-import smbus
+import smbus2
 
 __version__ = "1.0.0"
 _CARD_BASE_ADDRESS = 0x0e
@@ -41,7 +41,7 @@ class SM4rel4in:
             raise ValueError('Invalid stack level!')
         self._hw_address_ = _CARD_BASE_ADDRESS + stack
         self._i2c_bus_no = i2c
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             self._card_rev_major = bus.read_byte_data(self._hw_address_, _I2C_MEM_REVISION_HW_MAJOR_ADD)
             self._card_rev_minor = bus.read_byte_data(self._hw_address_, _I2C_MEM_REVISION_HW_MINOR_ADD)
@@ -53,7 +53,7 @@ class SM4rel4in:
     def set_relay(self, relay, val):
         if relay < 1 or relay > _RELAY_COUNT:
             raise ValueError('Invalid relay number must be [1..4]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             if val != 0:
                 bus.write_byte_data(self._hw_address_, _I2C_MEM_RELAY_SET, relay)
@@ -65,7 +65,7 @@ class SM4rel4in:
         bus.close()
 
     def set_all_relays(self, val):
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             bus.write_byte_data(self._hw_address_, _I2C_MEM_RELAY_VAL, 0x0f & val)
         except Exception as e:
@@ -76,7 +76,7 @@ class SM4rel4in:
     def get_relay(self, relay):
         if relay < 1 or relay > _RELAY_COUNT:
             raise ValueError('Invalid relay number must be [1..4]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             val = bus.read_byte_data(self._hw_address_, _I2C_MEM_RELAY_VAL)
         except Exception as e:
@@ -88,7 +88,7 @@ class SM4rel4in:
         return 0
 
     def get_all_relays(self):
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             val = bus.read_byte_data(self._hw_address_, _I2C_MEM_RELAY_VAL)
         except Exception as e:
@@ -100,7 +100,7 @@ class SM4rel4in:
     def get_in(self, channel):
         if channel < 1 or channel > _IN_CH_COUNT:
             raise ValueError('Invalid input channel number number must be [1..4]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             val = bus.read_byte_data(self._hw_address_, _I2C_MEM_DIG_IN)
         except Exception as e:
@@ -112,7 +112,7 @@ class SM4rel4in:
         return 0
 
     def get_all_in(self):
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             val = bus.read_byte_data(self._hw_address_, _I2C_MEM_DIG_IN)
         except Exception as e:
@@ -124,7 +124,7 @@ class SM4rel4in:
     def get_ac_in(self, channel):
         if channel < 1 or channel > _IN_CH_COUNT:
             raise ValueError('Invalid input channel number number must be [1..4]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             val = bus.read_byte_data(self._hw_address_, _I2C_MEM_AC_IN)
         except Exception as e:
@@ -136,7 +136,7 @@ class SM4rel4in:
         return 0
 
     def get_all_ac_in(self):
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             val = bus.read_byte_data(self._hw_address_, _I2C_MEM_AC_IN)
         except Exception as e:
@@ -148,7 +148,7 @@ class SM4rel4in:
     def get_count_cfg(self, channel):
         if channel < 1 or channel > _IN_CH_COUNT:
             raise ValueError('Invalid input channel number number must be [1..4]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             val = bus.read_byte_data(self._hw_address_, _I2C_MEM_EDGE_ENABLE)
         except Exception as e:
@@ -162,7 +162,7 @@ class SM4rel4in:
     def set_count_cfg(self, channel, state):
         if channel < 1 or channel > _IN_CH_COUNT:
             raise ValueError('Invalid input channel number number must be [1..4]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             val = bus.read_byte_data(self._hw_address_, _I2C_MEM_EDGE_ENABLE)
             if state != 0:
@@ -178,7 +178,7 @@ class SM4rel4in:
     def get_count(self, channel):
         if channel < 1 or channel > _IN_CH_COUNT:
             raise ValueError('Invalid input channel number number must be [1..4]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             buff = bus.read_i2c_block_data(self._hw_address_,
                                            _I2C_MEM_PULSE_COUNT_START + (channel - 1) * _COUNT_SIZE_BYTES,
@@ -193,7 +193,7 @@ class SM4rel4in:
     def reset_count(self, channel):
         if channel < 1 or channel > _IN_CH_COUNT:
             raise ValueError('Invalid input channel number number must be [1..4]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             bus.write_byte_data(self._hw_address_, _I2C_MEM_PULSE_COUNT_RESET, channel)
         except Exception as e:
@@ -204,7 +204,7 @@ class SM4rel4in:
     def get_pps(self, channel):
         if channel < 1 or channel > _IN_CH_COUNT:
             raise ValueError('Invalid input channel number number must be [1..4]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             val = bus.read_word_data(self._hw_address_, _I2C_MEM_PPS + (channel - 1) * _FREQ_SIZE_BYTES)
         except Exception as e:
@@ -216,7 +216,7 @@ class SM4rel4in:
     def get_encoder_cfg(self, channel):
         if channel < 1 or channel > _ENC_CH_COUNT:
             raise ValueError('Invalid input channel number number must be [1..2]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             val = bus.read_byte_data(self._hw_address_, _I2C_MEM_ENC_ENABLE)
         except Exception as e:
@@ -230,7 +230,7 @@ class SM4rel4in:
     def set_encoder_cfg(self, channel, state):
         if channel < 1 or channel > _ENC_CH_COUNT:
             raise ValueError('Invalid input channel number number must be [1..2]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             val = bus.read_byte_data(self._hw_address_, _I2C_MEM_ENC_ENABLE)
             if state != 0:
@@ -246,7 +246,7 @@ class SM4rel4in:
     def get_encoder(self, channel):
         if channel < 1 or channel > _ENC_CH_COUNT:
             raise ValueError('Invalid input channel number number must be [1..2]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             buff = bus.read_i2c_block_data(self._hw_address_,
                                            _I2C_MEM_ENC_COUNT_START + (channel - 1) * _COUNT_SIZE_BYTES,
@@ -261,7 +261,7 @@ class SM4rel4in:
     def reset_encoder(self, channel):
         if channel < 1 or channel > _ENC_CH_COUNT:
             raise ValueError('Invalid input channel number number must be [1..2]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             bus.write_byte_data(self._hw_address_, _I2C_MEM_ENC_COUNT_RESET, channel)
         except Exception as e:
@@ -272,7 +272,7 @@ class SM4rel4in:
     def get_frequency(self, channel):
         if channel < 1 or channel > _IN_CH_COUNT:
             raise ValueError('Invalid input channel number number must be [1..4]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             val = bus.read_word_data(self._hw_address_, _I2C_MEM_IN_FREQUENCY + (channel - 1) * _FREQ_SIZE_BYTES)
         except Exception as e:
@@ -284,7 +284,7 @@ class SM4rel4in:
     def get_pwm_fill(self, channel):
         if channel < 1 or channel > _IN_CH_COUNT:
             raise ValueError('Invalid input channel number number must be [1..4]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             val = bus.read_word_data(self._hw_address_, _I2C_MEM_PWM_IN_FILL + (channel - 1) * _FREQ_SIZE_BYTES)
         except Exception as e:
@@ -296,7 +296,7 @@ class SM4rel4in:
     def get_led_cfg(self, led):
         if led < 1 or led > _IN_CH_COUNT:
             raise ValueError('Invalid led number number must be [1..4]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             val = bus.read_byte_data(self._hw_address_, _I2C_MEM_LED_MODE)
         except Exception as e:
@@ -310,7 +310,7 @@ class SM4rel4in:
     def set_led_cfg(self, led, mode):
         if led < 1 or led > _IN_CH_COUNT:
             raise ValueError('Invalid led number number must be [1..4]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             val = bus.read_byte_data(self._hw_address_, _I2C_MEM_LED_MODE)
             if mode == 0:
@@ -326,7 +326,7 @@ class SM4rel4in:
     def set_led(self, led, val):
         if led < 1 or led > _IN_CH_COUNT:
             raise ValueError('Invalid led number number must be [1..4]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             if val != 0:
                 bus.write_byte_data(self._hw_address_, _I2C_MEM_LED_SET, led)
@@ -338,7 +338,7 @@ class SM4rel4in:
         bus.close()
 
     def set_all_leds(self, val):
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             bus.write_byte_data(self._hw_address_, _I2C_MEM_LED_VAL, 0x0f & val)
         except Exception as e:
@@ -349,7 +349,7 @@ class SM4rel4in:
     def get_led(self, led):
         if led < 1 or led > _IN_CH_COUNT:
             raise ValueError('Invalid led number number must be [1..4]!')
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             val = bus.read_byte_data(self._hw_address_, _I2C_MEM_LED_VAL)
         except Exception as e:
@@ -361,7 +361,7 @@ class SM4rel4in:
         return 0
 
     def get_all_leds(self):
-        bus = smbus.SMBus(self._i2c_bus_no)
+        bus = smbus2.SMBus(self._i2c_bus_no)
         try:
             val = bus.read_byte_data(self._hw_address_, _I2C_MEM_LED_VAL)
         except Exception as e:
