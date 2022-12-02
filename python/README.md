@@ -46,6 +46,8 @@ Type "help", "copyright", "credits" or "license" for more information.
 ## Functions prototype
 
 ### *class sm_4rel4in.SM4rel4in(stack = 0, i2c = 1)*
+* Description
+  * Init the SM4rel4in object and check the card presence 
 * Parameters
   * stack : Card stack level [0..7] set by the jumpers
   * i2c : I2C port number, 1 - Raspberry default , 7 - rock pi 4, etc.
@@ -53,16 +55,66 @@ Type "help", "copyright", "credits" or "license" for more information.
   * card object
 
 #### *set_relay(relay, val)*
+* Description
+  * Set one relay state
 * Parameters
   * *relay*: The relay number 1 to 4
   * *val*: The new state of the relay 0 = turn off else turn on
 * Returns
   * none
   
-#### *set_relay(relay, val)*
+#### *set_all_relays(val)*
+* Description
+  * Set the state of all relays as a 4 bits bit-map
 * Parameters
-  * *val*: The new state of the relay 0 = turn off else turn on
+  * *val*: The new state of all 4 relays 0 = all off, 15 = all on
 * Returns
   * none
   
- 
+#### *get_relay(relay)*
+* Description
+  * Read one relay state
+* Parameters
+  * *relay* relay number [1..4]
+* Returns
+  * the state of the relay 0 or 1
+
+#### *get_all_relays()*
+* Description
+  * Read the state of all 4 relays 
+* Parameters
+  * none
+* Returns
+  * relays state as bitmap [0..15]
+
+#### *get_in(channel)*
+* Description
+  * Read the state of one digital input channel
+* Parameters
+  * *channel*
+* Returns
+  * the state of the input 0/1
+
+#### *get_all_in()*
+* Description
+  * Read the state of all digital input channels
+* Parameters
+  * none
+* Returns
+  * the state of all inputs as a 4 bits value
+
+#### *get_ac_in(channel)*
+* Description
+  * Read
+* Parameters
+  * 
+* Returns
+  * 
+
+#### **
+* Description
+  * 
+* Parameters
+  * 
+* Returns
+  * 
