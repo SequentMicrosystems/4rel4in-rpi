@@ -43,6 +43,8 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>>
 ```
 
+More usage example in the [examples](examples/) folder
+
 ## Functions prototype
 
 ### *class sm_4rel4in.SM4rel4in(stack = 0, i2c = 1)*
