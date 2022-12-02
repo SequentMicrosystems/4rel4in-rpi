@@ -45,4 +45,24 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 ## Functions prototype
 
+### *class sm_4rel4in.SM4rel4in(stack = 0, i2c = 1)*
+* Parameters
+  * stack : Card stack level [0..7] set by the jumpers
+  * i2c : I2C port number, 1 - Raspberry default , 7 - rock pi 4, etc.
+* Returns 
+  * card object
 
+#### *set_relay(relay, val)*
+* Parameters
+  * *relay*: The relay number 1 to 4
+  * *val*: The new state of the relay 0 = turn off else turn on
+* Returns
+  * none
+  
+#### *set_relay(relay, val)*
+* Parameters
+  * *val*: The new state of the relay 0 = turn off else turn on
+* Returns
+  * none
+  
+ 
