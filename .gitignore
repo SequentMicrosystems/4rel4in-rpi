@@ -50,3 +50,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+python/sm_4rel4in/dist/sm_4rel4in-1.0.1-py3-none-any.whl
+python/sm_4rel4in/dist/sm_4rel4in-1.0.1.tar.gz
+python/sm_4rel4in/sm_4rel4in.egg-info/dependency_links.txt
+python/sm_4rel4in/sm_4rel4in.egg-info/PKG-INFO
+python/sm_4rel4in/sm_4rel4in.egg-info/requires.txt
+python/sm_4rel4in/sm_4rel4in.egg-info/SOURCES.txt
+python/sm_4rel4in/sm_4rel4in.egg-info/top_level.txt
