@@ -1,6 +1,6 @@
 import smbus2
 
-__version__ = "1.0.1"
+__version__ = "1.0.4"
 _CARD_BASE_ADDRESS = 0x0e
 _STACK_LEVEL_MAX = 7
 _IN_CH_COUNT = 4

@@ -1,4 +1,4 @@
-[![ioplus-rpi](../../readmeres/sequent.jpg)](https://www.sequentmicrosystems.com)
+[![4rel4in-rpi](https://github.com/SequentMicrosystems/4rel4in-rpi/tree/main/readmeres/sequent.jpg)](https://www.sequentmicrosystems.com)
 
 # sm_4rel4in
 
@@ -22,7 +22,7 @@ If you use python3.x repace the last line with:
 ```bash
 ~$ cd 4rel4in-rpi/
 ~/4rel4in-rpi$ git pull
-~$ cd ioplus-rpi/python/sm_4rel4in/
+~$ cd 4rel4in-rpi/python/sm_4rel4in/
 ~/4rel4in-rpi/python/sm_4rel4in$ sudo python setup.py install
 ```
 If you use python3.x repace the last line with:
