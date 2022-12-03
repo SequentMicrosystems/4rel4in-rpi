@@ -1,5 +1,3 @@
-[![4rel4in-rpi](https://github.com/SequentMicrosystems/4rel4in-rpi/tree/main/readmeres/sequent.jpg)](https://www.sequentmicrosystems.com)
-
 # sm_4rel4in
 
 This is the python library to control the [Four Relays four HV Inputs 8-Layer Stackable HAT for Raspberry Pi](https://sequentmicrosystems.com/products/four-relays-four-inputs-for-raspberry-pi).

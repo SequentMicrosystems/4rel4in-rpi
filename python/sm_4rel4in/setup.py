@@ -7,13 +7,14 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name='sm_4rel4in',
     packages=setuptools.find_packages(),
-    version='1.0.4',
+    version='1.0.5',
     license='MIT',
     description='Library for Sequent Microsystems Four Relays four HV Inputs 8-Layer Stackable HAT for Raspberry Pi',
     author='Sequent Microsystems',
     author_email='olcitu@gmail.com',
     url='https://sequentmicrosystems.com',
-    keywords=['industrial', 'raspberry', 'power', '4-20mA', '0-10V', 'optoisolated', 'relay', 'pulse count', ],
+    keywords=['industrial', 'raspberry', 'power', 'optoisolated', 'relay', 'pulse count', 'pwm read',
+              'quadrature encoders', 'frequency read', 'digital input', 'AC/DC input'],
     install_requires=[
         "smbus2",
     ],

@@ -6,7 +6,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 [project]
 name = "sm_4rel4in"
-version = "1.0.4"
+version = "1.0.5"
 authors = [
   { name="Sequent Microsystems", email="olcitu@gmail.com" },
 ]
