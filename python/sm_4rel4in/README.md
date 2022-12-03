@@ -10,24 +10,24 @@ This is the python library to control the [Four Relays four HV Inputs 8-Layer St
 ~$ sudo apt-get update
 ~$ sudo apt-get install build-essential python-pip python-dev python-smbus git
 ~$ git clone https://github.com/SequentMicrosystems/4rel4in-rpi.git
-~$ cd 4rel4in-rpi/python/4rel4in/
-~/4rel4in-rpi/python/4rel4in$ sudo python setup.py install
+~$ cd 4rel4in-rpi/python/sm_4rel4in/
+~/4rel4in-rpi/python/sm_4rel4in$ sudo python setup.py install
 ```
 If you use python3.x repace the last line with:
 ```
-~/4rel4in-rpi/python/4rel4in$ sudo python3 setup.py install
+~/4rel4in-rpi/python/sm_4rel4in$ sudo python3 setup.py install
 ```
 ## Update
 
 ```bash
 ~$ cd 4rel4in-rpi/
 ~/4rel4in-rpi$ git pull
-~$ cd ioplus-rpi/python/4rel4in/
-~/4rel4in-rpi/python/4rel4in$ sudo python setup.py install
+~$ cd ioplus-rpi/python/sm_4rel4in/
+~/4rel4in-rpi/python/sm_4rel4in$ sudo python setup.py install
 ```
 If you use python3.x repace the last line with:
 ```
-~/4rel4in-rpi/python/4rel4in$ sudo python3 setup.py install
+~/4rel4in-rpi/python/sm_4rel4in$ sudo python3 setup.py install
 ```
 ## Usage example
 
@@ -43,7 +43,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>>
 ```
 
-More usage example in the [examples](examples/) folder
+More usage example in the [examples](../examples/) folder
 
 ## Functions prototype
 
