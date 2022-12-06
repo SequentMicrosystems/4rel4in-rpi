@@ -7,11 +7,11 @@ Drivers to control Sequent Microsystems [Four Relays four HV Inputs 8-Layer Stac
 
 The Version 4.0 of the card adds the following features related to the optocoupled inputs:
 
- * Transitions counts for each input.
+ * Transitions counts for each input up to 4kHz
  * Improved processing of AC input signals.
- * Input counters with cumulative or pps (pulse per second) reading of input transitions.
- * 2 x Quadrature encoder inputs.
- * PWM inputs on each channel, reading the fill factor and frequency.
+ * Input counters with cumulative or pps (pulse per second) reading of input transitions (up to 4KHz).
+ * 2 x Quadrature encoder inputs speed up to 4000 pulse per second.
+ * PWM inputs on each channel, reading the fill factor and frequency less than 1% resolution for signals up to 100Hz and 5% for 500Hz.
  * Programmable LEDs for inputs.
  * Modbus RTU access for all features.
 
