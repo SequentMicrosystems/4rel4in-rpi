@@ -49,4 +49,9 @@ If you clone the repository any update can be made with the following commands:
 ~$ cd 4rel4in-rpi/  
 ~/4rel4in-rpi$ git pull
 ~/4rel4in-rpi$ sudo make install
+```
+
+## [Python](https://github.com/SequentMicrosystems/4rel4in-rpi/tree/main/python)
+
+## [Modbus RTU](https://github.com/SequentMicrosystems/4rel4in-rpi/blob/main/MODBUS.md)
 
