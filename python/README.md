@@ -30,13 +30,26 @@ If you use python3.x repace the last line with:
 ~/4rel4in-rpi/python/sm_4rel4in$ sudo python3 setup.py install
 ```
 ## Usage example
-
+On a Raspberry Pi the usage example looks like this
 ```bash
 ~$ python
 Python 3.10.7 (main, Nov  7 2022, 22:59:03) [GCC 8.3.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import sm_4rel4in
 >>> rel = sm_4rel4in.SM4rel4in(0)
+>>> rel.set_relay(1, 1)
+>>> rel.get_all_relays()
+1
+>>>
+```
+
+If your SBC use a diferent I2C port you have to specify that port in the constructor. For the rock pi, where the port is 7, your example looks like this:
+```bash
+~$ python
+Python 3.10.7 (main, Nov  7 2022, 22:59:03) [GCC 8.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import sm_4rel4in
+>>> rel = sm_4rel4in.SM4rel4in(0, 7)
 >>> rel.set_relay(1, 1)
 >>> rel.get_all_relays()
 1
