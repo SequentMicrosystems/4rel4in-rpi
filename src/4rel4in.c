@@ -10,10 +10,10 @@
 
 #define VERSION_BASE	(int)1
 #define VERSION_MAJOR	(int)0
-#define VERSION_MINOR	(int)1
+#define VERSION_MINOR	(int)2
 
 char *warranty =
-	"	       Copyright (c) 2016-2022 Sequent Microsystems\n"
+	"	       Copyright (c) 2016-2023 Sequent Microsystems\n"
 		"                                                             \n"
 		"		This program is free software; you can redistribute it and/or modify\n"
 		"		it under the terms of the GNU Leser General Public License as published\n"
@@ -251,6 +251,8 @@ const CliCmdType *gCmdArray[] =
 	&CMD_RELAY_WRITE,
 	&CMD_IN_READ,
 	&CMD_AC_IN_READ,
+	&CMD_BL_READ,
+	&CMD_BUTTON_READ,
 	&CMD_CFG_COUNT_READ,
 	&CMD_CFG_COUNT_WRITE,
 	&CMD_COUNT_READ,
@@ -264,6 +266,8 @@ const CliCmdType *gCmdArray[] =
 	&CMD_IN_FREQ_READ,
 	&CMD_RS485_READ,
 	&CMD_RS485_WRITE,
+	&CMD_CFG_EXTI_READ,
+	&CMD_CFG_EXTI_WRITE,
 	
 	NULL};//null terminated array of cli structure pointers
 

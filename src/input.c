@@ -229,6 +229,132 @@ static int doAcInRead(int argc, char *argv[])
 	return ARG_CNT_ERR;
 }
 
+//======================= BUTTON ========================
+
+int buttonGet(int dev, OutStateEnumType *state)
+{
+	u8 buff[2];
+
+	if (NULL == state)
+	{
+		return ERROR;
+	}
+
+
+	if (FAIL == i2cMem8Read(dev, I2C_MEM_BUTTON, buff, 1))
+	{
+		return ERROR;
+	}
+
+	if (buff[0] & 1)
+	{
+		*state = ON;
+	}
+	else
+	{
+		*state = OFF;
+	}
+	return OK;
+}
+
+
+int buttonLatchGet(int dev, OutStateEnumType *state)
+{
+	u8 buff[2];
+
+		if (NULL == state)
+		{
+			return ERROR;
+		}
+
+		if (FAIL == i2cMem8Read(dev, I2C_MEM_BUTTON, buff, 1))
+		{
+			return ERROR;
+		}
+
+		if (buff[0] & 2)
+		{
+			*state = ON;
+			buff[0] = 0;
+			i2cMem8Write(dev, I2C_MEM_BUTTON, buff, 1);//clear the latch
+		}
+		else
+		{
+			*state = OFF;
+		}
+		return OK;
+}
+
+static int doButtonLatch(int argc, char *argv[]);
+const CliCmdType CMD_BL_READ =
+{
+	"blrd",
+	2,
+	&doButtonLatch,
+	"\tblrd:		Read the button latch, return 1 if the button has been pushed since last read\n",
+	"\tUsage:		4rel4in <stack> blrd \n",
+	"",
+	"\tExample:		4rel4in 0 blrd \n"};
+
+static int doButtonLatch(int argc, char *argv[])
+{
+	int dev = 0;
+	OutStateEnumType state = STATE_COUNT;
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+
+ if (argc == 3)
+	{
+		if (OK != buttonLatchGet(dev, &state))
+		{
+			printf("Fail to read!\n");
+			return IO_ERROR;
+		}
+		printf("%d\n", state);
+		return OK;
+	}
+	return ARG_CNT_ERR;
+}
+
+static int doButton(int argc, char *argv[]);
+const CliCmdType CMD_BUTTON_READ =
+{
+	"brd",
+	2,
+	&doButton,
+	"\tbrd:		Read the button current state, 1 = pushed, 0 = released\n",
+	"\tUsage:		4rel4in <stack> brd \n",
+	"",
+	"\tExample:		4rel4in 0 brd \n"};
+
+static int doButton(int argc, char *argv[])
+{
+	int dev = 0;
+	OutStateEnumType state = STATE_COUNT;
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+
+ if (argc == 3)
+	{
+		if (OK != buttonGet(dev, &state))
+		{
+			printf("Fail to read!\n");
+			return IO_ERROR;
+		}
+		printf("%d\n", state);
+		return OK;
+	}
+	return ARG_CNT_ERR;
+}
+
 //==================== COUNTERS ==========================
 
 int cfgCntChGet(int dev, u8 channel, OutStateEnumType *state, COUNT_TYPE type)
@@ -1059,3 +1185,233 @@ static int doFrequencyRead(int argc, char *argv[])
 
 	return ARG_CNT_ERR;
 }
+
+//=========================== EXTERNAL INTERRUPT ======================
+int cfgExtiGet(int dev, int *val)
+{
+	u8 buff[2];
+
+	int add = I2C_MEM_EXTI_ENABLE;
+
+	if (NULL == val)
+	{
+		return ERROR;
+	}
+	if (FAIL == i2cMem8Read(dev, add, buff, 1))
+	{
+		return ERROR;
+	}
+	*val = buff[0];
+	return OK;
+}
+
+int cfgExtiChGet(int dev, int ch, int *val)
+{
+	u8 buff[2];
+	int chMax = IN_CH_NO;
+	int add = I2C_MEM_EXTI_ENABLE;
+
+	if (NULL == val)
+	{
+		return ERROR;
+	}
+
+	if ( (ch < CHANNEL_NR_MIN) || (ch > chMax))
+	{
+		printf("Invalid input nr!\n");
+		return ERROR;
+	}
+
+	if (FAIL == i2cMem8Read(dev, add, buff, 1))
+	{
+		return ERROR;
+	}
+
+	if (buff[0] & (1 << (ch - 1)))
+	{
+		*val = 1;
+	}
+	else
+	{
+		*val = 0;
+	}
+	return OK;
+}
+
+int cfgExtiSet(int dev, int val)
+{
+	u8 buff[2];
+	int add = I2C_MEM_EXTI_ENABLE;
+
+	if (val < 0)
+		val = 0;
+	if(val > 15)
+		val = 15;
+	buff[0]  = (u8)val;
+
+	return i2cMem8Write(dev, add, buff, 1);
+}
+
+
+
+
+int cfgExtiChSet(int dev, int ch, int val)
+{
+	u8 buff[2];
+	int chMax = IN_CH_NO;
+	int add = I2C_MEM_EXTI_ENABLE;
+
+	if ( (ch < CHANNEL_NR_MIN) || (ch > chMax))
+	{
+		printf("Invalid input nr!\n");
+		return ERROR;
+	}
+	if (FAIL == i2cMem8Read(dev, add, buff, 1))
+		{
+			return ERROR;
+		}
+	if(val != 0)
+	{
+		buff[0] |= (u8)(1 << (ch-1));
+	}
+	else
+	{
+		buff[0] &= (u8)(~(1 << (ch-1)));
+	}
+	return i2cMem8Write(dev, add, buff, 1);
+}
+
+
+static int doCfgExtiRead(int argc, char *argv[]);
+const CliCmdType CMD_CFG_EXTI_READ =
+{
+	"cfgextird",
+	2,
+	&doCfgExtiRead,
+	"\tcfgextird:		Read external interupt enable status\n",
+	"\tUsage:		4rel4in <stack> cfgextird <channel[1..4]>\n",
+	"\tUsage:		4rel4in <stack> cfgextird\n",
+	"\tExample:		4rel4in 0 cfgextird 2; Read external interupt enable Status of Input channel #2 \n"};
+
+static int doCfgExtiRead(int argc, char *argv[])
+{
+	int pin = 0;
+	int val = 0;
+	int dev = 0;
+	int state = 0;
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+
+	if (argc == 4)
+	{
+		pin = atoi(argv[3]);
+		if ( (pin < CHANNEL_NR_MIN) || (pin > RELAY_CH_NO))
+		{
+			printf("Input channel number value out of range!\n");
+			return ERROR;
+		}
+
+		if (OK != cfgExtiChGet(dev, pin, &state))
+		{
+			printf("Fail to read!\n");
+			return IO_ERROR;
+		}
+		if (state != 0)
+		{
+			printf("1\n");
+		}
+		else
+		{
+			printf("0\n");
+		}
+		return OK;
+	}
+	else if (argc == 3)
+	{
+		if (OK != cfgExtiGet(dev, &val))
+		{
+			printf("Fail to read!\n");
+			return IO_ERROR;
+		}
+		printf("%d\n", val);
+		return OK;
+	}
+	return ARG_CNT_ERR;
+}
+
+static int doCfgExtiWrite(int argc, char *argv[]);
+const CliCmdType CMD_CFG_EXTI_WRITE =
+	{
+		"cfgextiwr",
+		2,
+		&doCfgExtiWrite,
+		"\tcfgextiwr:		Set external interrupt generation On/Off\n",
+		"\tUsage:		4rel4in <stack> cfgextiwr <channel[1..4]> <0/1>\n",
+		"\tUsage:		4rel4in <stack> cfgextiwr <value[0..15]>\n",
+		"\tExample:		4rel4in 0 cfgextiwr 2 1; Enable external interrupt generation on input channel #2\n"};
+
+static int doCfgExtiWrite(int argc, char *argv[])
+{
+	int pin = 0;
+	int state = 0;
+	int val = 0;
+	int dev = 0;
+
+	if ( (argc != 4) && (argc != 5))
+	{
+		return ARG_CNT_ERR;
+	}
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+	if (argc == 5)
+	{
+		pin = atoi(argv[3]);
+		if ( (pin < CHANNEL_NR_MIN) || (pin > IN_CH_NO))
+		{
+			printf("Input channel number out of range\n");
+			return ARG_RANGE_ERROR;
+		}
+
+		if ( (atoi(argv[4]) > 1) || (atoi(argv[4]) < 0))
+		{
+			printf("Invalid state for external interrupt generation state (0/1)!\n");
+			return ARG_RANGE_ERROR;
+		}
+		state = atoi(argv[4]);
+
+		if (OK != cfgExtiChSet(dev, pin, state))
+		{
+			printf("Fail to write external interrupt config! \n");
+			return IO_ERROR;
+		}
+
+		return OK;
+	}
+	else
+	{
+		val = atoi(argv[3]);
+		if (val < 0 || val > 0x0f)
+		{
+			printf("Invalid config value [0-15]!\n");
+			return ARG_RANGE_ERROR;
+		}
+
+		if (OK != cfgExtiSet(dev, val))
+		{
+			printf("Fail to write configuration register!\n");
+			return IO_ERROR;
+		}
+
+		return OK;
+	}
+	return ARG_CNT_ERR;
+}
+

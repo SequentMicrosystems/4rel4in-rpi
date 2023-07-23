@@ -108,6 +108,8 @@ extern const CliCmdType CMD_RELAY_WRITE;
 
 extern const CliCmdType CMD_IN_READ;
 extern const CliCmdType CMD_AC_IN_READ;
+extern const CliCmdType CMD_BL_READ;
+extern const CliCmdType CMD_BUTTON_READ;
 extern const CliCmdType CMD_CFG_COUNT_READ;
 extern const CliCmdType CMD_CFG_COUNT_WRITE;
 extern const CliCmdType CMD_COUNT_READ;
@@ -119,6 +121,8 @@ extern const CliCmdType CMD_ENCODER_READ;
 extern const CliCmdType CMD_ENCODER_RESET;
 extern const CliCmdType CMD_PWM_READ;
 extern const CliCmdType CMD_IN_FREQ_READ;
+extern const CliCmdType CMD_CFG_EXTI_READ;
+extern const CliCmdType CMD_CFG_EXTI_WRITE;
 extern const CliCmdType *gCmdArray[];
 
 #endif
