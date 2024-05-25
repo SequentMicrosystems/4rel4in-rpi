@@ -35,7 +35,7 @@ install: 4rel4in
 	$Q echo "[Install]"
 	$Q cp 4rel4in		$(DESTDIR)$(PREFIX)/bin
 ifneq ($(WIRINGPI_SUID),0)
-	$Q chown root.root	$(DESTDIR)$(PREFIX)/bin/4rel4in
+	$Q chown root:root	$(DESTDIR)$(PREFIX)/bin/4rel4in
 	$Q chmod 4755		$(DESTDIR)$(PREFIX)/bin/4rel4in
 endif
 
