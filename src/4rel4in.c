@@ -10,7 +10,7 @@
 
 #define VERSION_BASE	(int)1
 #define VERSION_MAJOR	(int)0
-#define VERSION_MINOR	(int)2
+#define VERSION_MINOR	(int)3
 
 char *warranty =
 	"	       Copyright (c) 2016-2023 Sequent Microsystems\n"

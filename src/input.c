@@ -1208,7 +1208,7 @@ int cfgExtiGet(int dev, int *val)
 int cfgExtiChGet(int dev, int ch, int *val)
 {
 	u8 buff[2];
-	int chMax = IN_CH_NO;
+	int chMax = IN_CH_NO + 1;
 	int add = I2C_MEM_EXTI_ENABLE;
 
 	if (NULL == val)
@@ -1245,8 +1245,8 @@ int cfgExtiSet(int dev, int val)
 
 	if (val < 0)
 		val = 0;
-	if(val > 15)
-		val = 15;
+	if(val > 31) // button interrupt 0x10
+		val = 31;
 	buff[0]  = (u8)val;
 
 	return i2cMem8Write(dev, add, buff, 1);
@@ -1258,7 +1258,7 @@ int cfgExtiSet(int dev, int val)
 int cfgExtiChSet(int dev, int ch, int val)
 {
 	u8 buff[2];
-	int chMax = IN_CH_NO;
+	int chMax = IN_CH_NO + 1; // last channel (5) is the button interrupt
 	int add = I2C_MEM_EXTI_ENABLE;
 
 	if ( (ch < CHANNEL_NR_MIN) || (ch > chMax))
@@ -1289,7 +1289,7 @@ const CliCmdType CMD_CFG_EXTI_READ =
 	2,
 	&doCfgExtiRead,
 	"\tcfgextird:		Read external interupt enable status\n",
-	"\tUsage:		4rel4in <stack> cfgextird <channel[1..4]>\n",
+	"\tUsage:		4rel4in <stack> cfgextird <channel[1..5]> ch = 5 is the button interrupt\n",
 	"\tUsage:		4rel4in <stack> cfgextird\n",
 	"\tExample:		4rel4in 0 cfgextird 2; Read external interupt enable Status of Input channel #2 \n"};
 
@@ -1309,7 +1309,7 @@ static int doCfgExtiRead(int argc, char *argv[])
 	if (argc == 4)
 	{
 		pin = atoi(argv[3]);
-		if ( (pin < CHANNEL_NR_MIN) || (pin > RELAY_CH_NO))
+		if ( (pin < CHANNEL_NR_MIN) || (pin > RELAY_CH_NO + 1))
 		{
 			printf("Input channel number value out of range!\n");
 			return ERROR;
@@ -1350,8 +1350,8 @@ const CliCmdType CMD_CFG_EXTI_WRITE =
 		2,
 		&doCfgExtiWrite,
 		"\tcfgextiwr:		Set external interrupt generation On/Off\n",
-		"\tUsage:		4rel4in <stack> cfgextiwr <channel[1..4]> <0/1>\n",
-		"\tUsage:		4rel4in <stack> cfgextiwr <value[0..15]>\n",
+		"\tUsage:		4rel4in <stack> cfgextiwr <channel[1..5]> <0/1> (cahannel 5 is the button)\n",
+		"\tUsage:		4rel4in <stack> cfgextiwr <value[0..31]>\n",
 		"\tExample:		4rel4in 0 cfgextiwr 2 1; Enable external interrupt generation on input channel #2\n"};
 
 static int doCfgExtiWrite(int argc, char *argv[])
@@ -1374,7 +1374,7 @@ static int doCfgExtiWrite(int argc, char *argv[])
 	if (argc == 5)
 	{
 		pin = atoi(argv[3]);
-		if ( (pin < CHANNEL_NR_MIN) || (pin > IN_CH_NO))
+		if ( (pin < CHANNEL_NR_MIN) || (pin > IN_CH_NO + 1))
 		{
 			printf("Input channel number out of range\n");
 			return ARG_RANGE_ERROR;
@@ -1398,9 +1398,9 @@ static int doCfgExtiWrite(int argc, char *argv[])
 	else
 	{
 		val = atoi(argv[3]);
-		if (val < 0 || val > 0x0f)
+		if (val < 0 || val > 0x1f)
 		{
-			printf("Invalid config value [0-15]!\n");
+			printf("Invalid config value [0-31]!\n"); 
 			return ARG_RANGE_ERROR;
 		}
 
