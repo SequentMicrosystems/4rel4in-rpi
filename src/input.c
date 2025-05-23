@@ -1415,3 +1415,479 @@ static int doCfgExtiWrite(int argc, char *argv[])
 	return ARG_CNT_ERR;
 }
 
+// ============================ Current readings =========================================
+
+int crtGet(int dev, u8 channel, float *val)
+{
+	u8 buff[COUNT_SIZE];
+	int16_t rawCrt = 0;
+
+	if (NULL == val)
+	{
+		return ERROR;
+	}
+	if ( (channel < CHANNEL_NR_MIN) || (channel > IN_CH_NO))
+	{
+		printf("Invalid input nr!\n");
+		return ERROR;
+	}
+	if (OK
+		!= i2cMem8Read(dev, I2C_CRT_IN_VAL1_ADD + (channel - 1) * CRT_SIZE, buff,
+			CRT_SIZE))
+	{
+		return ERROR;
+	}
+	memcpy(&rawCrt, buff, CRT_SIZE);
+	*val = (float)rawCrt/CRT_SCALE;
+	return OK;
+}
+
+int crtRMSGet(int dev, u8 channel, float *val)
+{
+	u8 buff[COUNT_SIZE];
+	int16_t rawCrt = 0;
+
+	if (NULL == val)
+	{
+		return ERROR;
+	}
+	if ( (channel < CHANNEL_NR_MIN) || (channel > IN_CH_NO))
+	{
+		printf("Invalid input nr!\n");
+		return ERROR;
+	}
+	if (OK
+		!= i2cMem8Read(dev, I2C_CRT_IN_RMS_VAL1_ADD + (channel - 1) * CRT_SIZE, buff,
+			CRT_SIZE))
+	{
+		return ERROR;
+	}
+	memcpy(&rawCrt, buff, CRT_SIZE);
+	*val = (float)rawCrt/CRT_SCALE;
+	return OK;
+}
+
+
+static int doCurrentRead(int argc, char *argv[]);
+const CliCmdType CMD_CRT_READ =
+	{
+		"crtrd",
+		2,
+		&doCurrentRead,
+		"\tcrtrd:		Read the current(A) for one relay output\n",
+		"\tUsage:		4rel4in <stack> crtrd <channel[1..4]>\n",
+		"",
+		"\tExample:		4rel4in 0 crtrd 2; Read outout current for Relay channel #2  \n"};
+
+static int doCurrentRead(int argc, char *argv[])
+{
+	int pin = 0;
+	float val = 0;
+	int dev = 0;
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+	if(getHw() < 10)
+	{
+		printf("Not available for this card type!\n");
+		return ERROR;
+	}
+	if (argc == 4)
+	{
+		pin = atoi(argv[3]);
+		if ( (pin < CHANNEL_NR_MIN) || (pin > IN_CH_NO))
+		{
+			printf("Input channel number value out of range!\n");
+			return ERROR;
+		}
+
+		if (OK != crtGet(dev, pin, &val))
+		{
+			printf("Fail to read!\n");
+			return IO_ERROR;
+		}
+
+		printf("%0.3f\n", val);
+
+		return OK;
+	}
+
+	return ARG_CNT_ERR;
+}
+
+
+static int doCurrentRMSRead(int argc, char *argv[]);
+const CliCmdType CMD_CRT_RMS_READ =
+	{
+		"crtrmsrd",
+		2,
+		&doCurrentRMSRead,
+		"\tcrtrd:		Read the RMS current(A) for one relay output\n",
+		"\tUsage:		4rel4in <stack> crtrmsrd <channel[1..4]>\n",
+		"",
+		"\tExample:		4rel4in 0 crtrmsrd 2; Read outout RMS current for Relay channel #2  \n"};
+
+static int doCurrentRMSRead(int argc, char *argv[])
+{
+	int pin = 0;
+	float val = 0;
+	int dev = 0;
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+	if(getHw() < 10)
+	{
+		printf("Not available for this card type!\n");
+		return ERROR;
+	}
+	if (argc == 4)
+	{
+		pin = atoi(argv[3]);
+		if ( (pin < CHANNEL_NR_MIN) || (pin > IN_CH_NO))
+		{
+			printf("Input channel number value out of range!\n");
+			return ERROR;
+		}
+
+		if (OK != crtRMSGet(dev, pin, &val))
+		{
+			printf("Fail to read!\n");
+			return IO_ERROR;
+		}
+
+		printf("%0.3f\n", val);
+
+		return OK;
+	}
+
+	return ARG_CNT_ERR;
+}
+
+
+
+static int doCurrentOffset(int argc, char *argv[]);
+const CliCmdType CMD_CRT_OFFSET =
+	{
+		"crtofs",
+		2,
+		&doCurrentOffset,
+		"\tcrtofs:		Calibrate the current sensor offset value. This command must be run with load disconnected from relay \n \t\t For good results run this command with relay turned on and off",
+		"\tUsage:		4rel4in <stack> crtofs <channel[1..4]>\n",
+		"",
+		"\tExample:		4rel4in 0 crtofs 2; Calibrate the offset for current sensor of the Relay channel #2\n"};
+
+static int doCurrentOffset(int argc, char *argv[])
+{
+	int pin = 0;
+	int dev = 0;
+	u8 buff[2];
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+	if(getHw() < 10)
+	{
+		printf("Not available for this card type!\n");
+		return ERROR;
+	}
+	if (argc == 4)
+	{
+		pin = atoi(argv[3]);
+		if ( (pin < CHANNEL_NR_MIN) || (pin > IN_CH_NO))
+		{
+			printf("Input channel number value out of range!\n");
+			return ERROR;
+		}
+		buff[0] = pin;
+		if (OK!= i2cMem8Write(dev, I2C_MEM_CALIB_CHANNEL, buff, 1))
+			{
+				return ERROR;
+			}
+
+			buff[0] = ZERO_CURRENT_KEY;
+		if (OK!= i2cMem8Write(dev, I2C_MEM_CALIB_KEY, buff, 1))
+			{
+				return ERROR;
+			}
+
+		printf("done\n");
+
+		return OK;
+	}
+
+	return ARG_CNT_ERR;
+}
+
+
+
+static int doCurrentcCal(int argc, char *argv[]);
+const CliCmdType CMD_CRT_CAL =
+	{
+		"crtcal",
+		2,
+		&doCurrentcCal,
+		"\tcrtcal:		Calibrate the current measurement, must be done in two points\n",
+		"\tUsage:		4rel4in <stack> crtcal <channel[1..4]> <value[0..10]>\n",
+		"",
+		"\tExample:		4rel4in 0 crtcal 2 6.376; Set one of the two calibration points as 6.376A for channel #2  \n"};
+
+static int doCurrentcCal(int argc, char *argv[])
+{
+	int pin = 0;
+	float val = 0;
+	int dev = 0;
+	u8 buff[6];
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+	if(getHw() < 10)
+	{
+		printf("Not available for this card type!\n");
+		return ERROR;
+	}
+	if (argc == 5)
+	{
+		pin = atoi(argv[3]);
+		if ( (pin < CHANNEL_NR_MIN) || (pin > IN_CH_NO))
+		{
+			printf("Input channel number value out of range!\n");
+			return ERROR;
+		}
+
+		val = atof(argv[4]);
+		memcpy(buff, &val, 4);
+		buff[4] = 0xff & pin;
+		buff[5] = CALIBRATION_KEY;
+
+		if (OK!= i2cMem8Write(dev, I2C_MEM_CALIB_KEY, buff, 6))
+			{
+				return ERROR;
+			}
+
+		printf("done\n");
+
+
+		return OK;
+	}
+
+	return ARG_CNT_ERR;
+}
+
+
+static int doCurrentCalRst(int argc, char *argv[]);
+const CliCmdType CMD_CRT_CAL_RESET =
+	{
+		"crtcrst",
+		2,
+		&doCurrentCalRst,
+		"\tcrtcrst:		Reset the calibration coefficients for current measurement channel\n",
+		"\tUsage:		4rel4in <stack> crtcrst <channel[1..4]>\n",
+		"",
+		"\tExample:		4rel4in 0 crtcrst 2; Reset calibration coefficients for current sensor of the Relay channel #2\n"};
+
+static int doCurrentCalRst(int argc, char *argv[])
+{
+	int pin = 0;
+	int dev = 0;
+	u8 buff[2];
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+	if(getHw() < 10)
+	{
+		printf("Not available for this card type!\n");
+		return ERROR;
+	}
+	if (argc == 4)
+	{
+		pin = atoi(argv[3]);
+		if ( (pin < CHANNEL_NR_MIN) || (pin > IN_CH_NO))
+		{
+			printf("Input channel number value out of range!\n");
+			return ERROR;
+		}
+		buff[0] = pin;
+		if (OK!= i2cMem8Write(dev, I2C_MEM_CALIB_CHANNEL, buff, 1))
+			{
+				return ERROR;
+			}
+
+			buff[0] = RESET_CALIBRATION_KEY;
+		if (OK!= i2cMem8Write(dev, I2C_MEM_CALIB_KEY, buff, 1))
+			{
+				return ERROR;
+			}
+
+		printf("done\n");
+
+		return OK;
+	}
+
+	return ARG_CNT_ERR;
+}
+
+int resThermGet(int dev, u8 channel, float *val)
+{
+	u8 buff[COUNT_SIZE];
+	uint16_t rawRes = 0;
+
+	if (NULL == val)
+	{
+		return ERROR;
+	}
+	if ( (channel < CHANNEL_NR_MIN) || (channel > IN_CH_NO))
+	{
+		printf("Invalid input nr!\n");
+		return ERROR;
+	}
+	if (OK
+		!= i2cMem8Read(dev, I2C_MEM_TH_RES_START_ADD + (channel - 1) * CRT_SIZE, buff,
+			CRT_SIZE))
+	{
+		return ERROR;
+	}
+	memcpy(&rawRes, buff, CRT_SIZE);
+	*val = (float)rawRes/RES_SCALE;
+	return OK;
+}
+
+static int doThermistorRead(int argc, char *argv[]);
+const CliCmdType CMD_THERM_RES_READ =
+	{
+		"resrd",
+		2,
+		&doThermistorRead,
+		"\tresrd:		Read the Thermistor IN channel resistance in ohms\n",
+		"\tUsage:		4rel4in <stack> resrd <channel[1..4]>\n",
+		"",
+		"\tExample:		4rel4in 0 resrd 2; Read resistance value for Thermistor channel #2  \n"};
+
+static int doThermistorRead(int argc, char *argv[])
+{
+	int pin = 0;
+	float val = 0;
+	int dev = 0;
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+	if(getHw() < 10)
+	{
+		printf("Not available for this card type!\n");
+		return ERROR;
+	}
+	if (argc == 4)
+	{
+		pin = atoi(argv[3]);
+		if ( (pin < CHANNEL_NR_MIN) || (pin > IN_CH_NO))
+		{
+			printf("Input channel number value out of range!\n");
+			return ERROR;
+		}
+
+		if (OK != resThermGet(dev, pin, &val))
+		{
+			printf("Fail to read!\n");
+			return IO_ERROR;
+		}
+
+		printf("%0.0f\n", val);
+
+		return OK;
+	}
+
+	return ARG_CNT_ERR;
+}
+
+
+int resThermGetTemp(int dev, u8 channel, float *val)
+{
+	u8 buff[COUNT_SIZE];
+	int16_t rawTemp = 0;
+
+	if (NULL == val)
+	{
+		return ERROR;
+	}
+	if ( (channel < CHANNEL_NR_MIN) || (channel > IN_CH_NO))
+	{
+		printf("Invalid input nr!\n");
+		return ERROR;
+	}
+	if (OK
+		!= i2cMem8Read(dev, I2C_MEM_TH_TEMP_START_ADD + (channel - 1) * CRT_SIZE, buff,
+			CRT_SIZE))
+	{
+		return ERROR;
+	}
+	memcpy(&rawTemp, buff, CRT_SIZE);
+	*val = (float)rawTemp/TEMP_SCALE;
+	return OK;
+}
+
+static int doThermistorTempRead(int argc, char *argv[]);
+const CliCmdType CMD_THERM_TEMP_READ =
+	{
+		"trd",
+		2,
+		&doThermistorTempRead,
+		"\ttrd:		Read the Thermistor IN channel temperature in deg C\n",
+		"\tUsage:		4rel4in <stack> trd <channel[1..4]>\n",
+		"",
+		"\tExample:		4rel4in 0 trd 2; Read temperature value for Thermistor channel #2  \n"};
+
+static int doThermistorTempRead(int argc, char *argv[])
+{
+	int pin = 0;
+	float val = 0;
+	int dev = 0;
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+	if(getHw() < 10)
+	{
+		printf("Not available for this card type!\n");
+		return ERROR;
+	}
+	if (argc == 4)
+	{
+		pin = atoi(argv[3]);
+		if ( (pin < CHANNEL_NR_MIN) || (pin > IN_CH_NO))
+		{
+			printf("Input channel number value out of range!\n");
+			return ERROR;
+		}
+
+		if (OK != resThermGetTemp(dev, pin, &val))
+		{
+			printf("Fail to read!\n");
+			return IO_ERROR;
+		}
+
+		printf("%0.2f\n", val);
+
+		return OK;
+	}
+
+	return ARG_CNT_ERR;
+}
+

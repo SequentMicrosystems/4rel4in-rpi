@@ -9,11 +9,13 @@
 #include "thread.h"
 
 #define VERSION_BASE	(int)1
-#define VERSION_MAJOR	(int)0
-#define VERSION_MINOR	(int)3
+#define VERSION_MAJOR	(int)1
+#define VERSION_MINOR	(int)0
+
+
 
 char *warranty =
-	"	       Copyright (c) 2016-2023 Sequent Microsystems\n"
+	"	       Copyright (c) 2016-2025 Sequent Microsystems\n"
 		"                                                             \n"
 		"		This program is free software; you can redistribute it and/or modify\n"
 		"		it under the terms of the GNU Leser General Public License as published\n"
@@ -27,6 +29,7 @@ char *warranty =
 		"			\n"
 		"		You should have received a copy of the GNU Lesser General Public License\n"
 		"		along with this program. If not, see <http://www.gnu.org/licenses/>.";
+int hwRev = 0;
 
 void usage(void)
 {
@@ -67,12 +70,18 @@ int doBoardInit(int stack)
 	{
 		return ERROR;
 	}
-	if (ERROR == i2cMem8Read(dev, I2C_MEM_REVISION_MAJOR_ADD, buff, 1))
+	if (ERROR == i2cMem8Read(dev, I2C_MEM_REVISION_HW_MAJOR_ADD, buff, 1))
 	{
 		printf("Four Relays Four Inputs card did not detected!\n");
 		return ERROR;
 	}
+	hwRev = buff[0];
 	return dev;
+}
+
+int getHw(void)
+{
+	return hwRev;
 }
 
 int boardCheck(int stack)
@@ -174,7 +183,7 @@ static int doVersion(int argc, char *argv[])
 {
 	UNUSED(argc);
 	UNUSED(argv);
-	printf("4rel4in v%d.%d.%d Copyright (c) 2016 - 2022 Sequent Microsystems\n",
+	printf("4rel4in v%d.%d.%d Copyright (c) 2016 - 2025 Sequent Microsystems\n",
 	VERSION_BASE, VERSION_MAJOR, VERSION_MINOR);
 	printf("\nThis is free software with ABSOLUTELY NO WARRANTY.\n");
 	printf("For details type: 4rel4in -warranty\n");
@@ -268,7 +277,13 @@ const CliCmdType *gCmdArray[] =
 	&CMD_RS485_WRITE,
 	&CMD_CFG_EXTI_READ,
 	&CMD_CFG_EXTI_WRITE,
-	
+	&CMD_CRT_READ,
+	&CMD_CRT_RMS_READ,
+	&CMD_CRT_OFFSET,
+	&CMD_CRT_CAL_RESET,
+	&CMD_CRT_CAL,
+	&CMD_THERM_RES_READ,
+	&CMD_THERM_TEMP_READ,
 	NULL};//null terminated array of cli structure pointers
 
 int main(int argc, char *argv[])

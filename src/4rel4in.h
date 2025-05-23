@@ -15,7 +15,17 @@
 #define PWM_IN_FILL_SIZE 2
 #define PWM_IN_FILL_SCALE ((float)100)
 #define IN_FREQENCY_SIZE 2
+#define CRT_SIZE 2
+#define ANALOG_VAL_SIZE 2
+#define THERMISTOR_SIZE 2
+#define CRT_SCALE ((float)1000)
+#define RES_SCALE ((float)0.1)
+#define TEMP_SCALE ((float)100)
 #define RETRY_TIMES	10
+
+#define CALIBRATION_KEY 0xaa
+#define RESET_CALIBRATION_KEY 0x55
+#define ZERO_CURRENT_KEY 0x11
 
 
 enum
@@ -49,13 +59,40 @@ enum
 	I2C_MEM_EXTI_ENABLE,
 	I2C_MEM_BUTTON, //bit0 - state, bit1 - latch
 
+	// INDUSTRIAL VERSION ADDED 1
+	I2C_CRT_IN_VAL1_ADD , // current vales scaled as A/100 (1 = 0.01A) 16-bit signed integer
+	I2C_CRT_IN_RMS_VAL1_ADD  = I2C_CRT_IN_VAL1_ADD + ANALOG_VAL_SIZE * IN_CH_NO, //current RMS values scaled as A/100 16bit unsigned integer
+	I2C_MEM_CALIB_VALUE = I2C_CRT_IN_RMS_VAL1_ADD + ANALOG_VAL_SIZE * IN_CH_NO, // floating point value expressing the current in A
+	I2C_MEM_CALIB_CHANNEL = I2C_MEM_CALIB_VALUE + 4,
+	I2C_MEM_CALIB_KEY, //set calib point -> 0xaa; reset calibration on the channel -> 0x55; save zero current offset -> 0x11
+	I2C_MEM_CALIB_STATUS,
+	I2C_MEM_WDT_RESET_ADD,
+	I2C_MEM_WDT_INTERVAL_SET_ADD,
+	I2C_MEM_WDT_INTERVAL_GET_ADD = I2C_MEM_WDT_INTERVAL_SET_ADD + 2,
+	I2C_MEM_WDT_INIT_INTERVAL_SET_ADD = I2C_MEM_WDT_INTERVAL_GET_ADD + 2,
+	I2C_MEM_WDT_INIT_INTERVAL_GET_ADD = I2C_MEM_WDT_INIT_INTERVAL_SET_ADD + 2,
+	I2C_MEM_WDT_RESET_COUNT_ADD = I2C_MEM_WDT_INIT_INTERVAL_GET_ADD + 2,
+	I2C_MEM_WDT_CLEAR_RESET_COUNT_ADD = I2C_MEM_WDT_RESET_COUNT_ADD + 2,
+	I2C_MEM_WDT_POWER_OFF_INTERVAL_SET_ADD,
+	I2C_MEM_WDT_POWER_OFF_INTERVAL_GET_ADD = I2C_MEM_WDT_POWER_OFF_INTERVAL_SET_ADD + 4,
+
+	I2C_MEM_DIAG_RASP_V = I2C_MEM_WDT_POWER_OFF_INTERVAL_GET_ADD + 4,
+	I2C_MEM_DIAG_RASP_V1,
+	I2C_MEM_DIAG_SNS_VCC,
+	I2C_MEM_DIAG_SNS_VCC1,
+// END INDUSTRIAL VERSION ADDED 1
+
 
 	I2C_MEM_REVISION_HW_MAJOR_ADD = 0x78,
 	I2C_MEM_REVISION_HW_MINOR_ADD,
 	I2C_MEM_REVISION_MAJOR_ADD,
 	I2C_MEM_REVISION_MINOR_ADD,
 
-	SLAVE_BUFF_SIZE,
+	I2C_MEM_TH_RES_START_ADD,
+	I2C_MEM_TH_RES_END_ADD = I2C_MEM_TH_RES_START_ADD + ANALOG_VAL_SIZE * IN_CH_NO,
+	I2C_MEM_TH_TEMP_START_ADD = I2C_MEM_TH_RES_END_ADD,
+
+	SLAVE_BUFF_SIZE = 256,
 };
 
 #define ERROR	-1
@@ -98,6 +135,7 @@ typedef struct __attribute__((packed))
 	unsigned int add :8;
 } ModbusSetingsType;
 int doBoardInit(int stack);
+int getHw(void);
 // RS-485 CLI structures
 extern const CliCmdType CMD_RS485_READ;
 extern const CliCmdType CMD_RS485_WRITE;
@@ -123,6 +161,13 @@ extern const CliCmdType CMD_PWM_READ;
 extern const CliCmdType CMD_IN_FREQ_READ;
 extern const CliCmdType CMD_CFG_EXTI_READ;
 extern const CliCmdType CMD_CFG_EXTI_WRITE;
+extern const CliCmdType CMD_CRT_READ;
+extern const CliCmdType CMD_CRT_RMS_READ;
+extern const CliCmdType CMD_CRT_OFFSET;
+extern const CliCmdType CMD_CRT_CAL;
+extern const CliCmdType CMD_CRT_CAL_RESET;
+extern const CliCmdType CMD_THERM_RES_READ;
+extern const CliCmdType CMD_THERM_TEMP_READ;
 extern const CliCmdType *gCmdArray[];
 
 #endif
