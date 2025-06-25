@@ -134,7 +134,7 @@ static int doInRead(int argc, char *argv[])
 	if (argc == 4)
 	{
 		pin = atoi(argv[3]);
-		if ( (pin < CHANNEL_NR_MIN) || (pin > RELAY_CH_NO))
+		if ( (pin < CHANNEL_NR_MIN) || (pin > IN_CH_NO))
 		{
 			printf("Input channel number value out of range!\n");
 			return ERROR;
@@ -195,7 +195,7 @@ static int doAcInRead(int argc, char *argv[])
 	if (argc == 4)
 	{
 		pin = atoi(argv[3]);
-		if ( (pin < CHANNEL_NR_MIN) || (pin > RELAY_CH_NO))
+		if ( (pin < CHANNEL_NR_MIN) || (pin > IN_CH_NO))
 		{
 			printf("Input channel number value out of range!\n");
 			return ERROR;
@@ -577,7 +577,7 @@ static int doCfgCountRead(int argc, char *argv[])
 	if (argc == 4)
 	{
 		pin = atoi(argv[3]);
-		if ( (pin < CHANNEL_NR_MIN) || (pin > RELAY_CH_NO))
+		if ( (pin < CHANNEL_NR_MIN) || (pin > IN_CH_NO))
 		{
 			printf("Input channel number value out of range!\n");
 			return ERROR;
@@ -1309,7 +1309,7 @@ static int doCfgExtiRead(int argc, char *argv[])
 	if (argc == 4)
 	{
 		pin = atoi(argv[3]);
-		if ( (pin < CHANNEL_NR_MIN) || (pin > RELAY_CH_NO + 1))
+		if ( (pin < CHANNEL_NR_MIN) || (pin > IN_CH_NO + 1))
 		{
 			printf("Input channel number value out of range!\n");
 			return ERROR;
@@ -1426,9 +1426,9 @@ int crtGet(int dev, u8 channel, float *val)
 	{
 		return ERROR;
 	}
-	if ( (channel < CHANNEL_NR_MIN) || (channel > IN_CH_NO))
+	if ( (channel < CHANNEL_NR_MIN) || (channel > RELAY_CH_NO))
 	{
-		printf("Invalid input nr!\n");
+		printf("Invalid relay number!\n");
 		return ERROR;
 	}
 	if (OK
@@ -1451,9 +1451,9 @@ int crtRMSGet(int dev, u8 channel, float *val)
 	{
 		return ERROR;
 	}
-	if ( (channel < CHANNEL_NR_MIN) || (channel > IN_CH_NO))
+	if ( (channel < CHANNEL_NR_MIN) || (channel > RELAY_CH_NO))
 	{
-		printf("Invalid input nr!\n");
+		printf("Invalid relay number!\n");
 		return ERROR;
 	}
 	if (OK
@@ -1477,7 +1477,7 @@ const CliCmdType CMD_CRT_READ =
 		"\tcrtrd:		Read the current(A) for one relay output\n",
 		"\tUsage:		4rel4in <stack> crtrd <channel[1..4]>\n",
 		"",
-		"\tExample:		4rel4in 0 crtrd 2; Read outout current for Relay channel #2  \n"};
+		"\tExample:		4rel4in 0 crtrd 2; Read output current for Relay channel #2  \n"};
 
 static int doCurrentRead(int argc, char *argv[])
 {
@@ -1528,7 +1528,7 @@ const CliCmdType CMD_CRT_RMS_READ =
 		"\tcrtrd:		Read the RMS current(A) for one relay output\n",
 		"\tUsage:		4rel4in <stack> crtrmsrd <channel[1..4]>\n",
 		"",
-		"\tExample:		4rel4in 0 crtrmsrd 2; Read outout RMS current for Relay channel #2  \n"};
+		"\tExample:		4rel4in 0 crtrmsrd 2; Read output RMS current for Relay channel #2  \n"};
 
 static int doCurrentRMSRead(int argc, char *argv[])
 {
@@ -1848,9 +1848,9 @@ const CliCmdType CMD_THERM_TEMP_READ =
 		2,
 		&doThermistorTempRead,
 		"\ttrd:		Read the Thermistor IN channel temperature in deg C\n",
-		"\tUsage:		4rel4in <stack> trd <channel[1..4]>\n",
+		"\tUsage:		4rel4in <stack> trd <channel[1..4]>; (For 10k ntc, b=3435 (default)) \n",
 		"",
-		"\tExample:		4rel4in 0 trd 2; Read temperature value for Thermistor channel #2  \n"};
+		"\tExample:		4rel4in 0 trd 2; Read temperature value for Thermistor channel #2\n"};
 
 static int doThermistorTempRead(int argc, char *argv[])
 {

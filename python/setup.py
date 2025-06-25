@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name='sm_4rel4in',
     packages=setuptools.find_packages(),
-    version='1.0.5',
+    version='1.0.6',
     license='MIT',
     description='Library for Sequent Microsystems Four Relays four HV Inputs 8-Layer Stackable HAT for Raspberry Pi',
     author='Sequent Microsystems',
