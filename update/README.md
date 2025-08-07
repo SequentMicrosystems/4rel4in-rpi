@@ -13,4 +13,4 @@ cd 4rel4in-rpi/update/
 If you cloned the repository already, skip the first step. 
 The command will download the newest firmware version from our server and write it to the board.
 The stack level of the board must be provided as a parameter. 
-During firmware update, we strongly recommend disconnecting all outputs from the board, since they can change state unpredictably. Make sure no one uses the I2C port during the update process. 
+During firmware update, we strongly recommend disconnecting all outputs from the board, since they can change state unpredictably. Make sure no one else uses the I2C port during the update process. 
