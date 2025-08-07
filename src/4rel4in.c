@@ -10,7 +10,7 @@
 
 #define VERSION_BASE	(int)1
 #define VERSION_MAJOR	(int)1
-#define VERSION_MINOR	(int)0
+#define VERSION_MINOR	(int)1
 
 
 
@@ -248,6 +248,58 @@ int doList(int argc, char *argv[])
 	printf("\n");
 	return OK;
 }
+int fwGet(int dev, int *minor, int *major)
+{
+	uint8_t buff[2];
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+	if (ERROR == i2cMem8Read(dev, I2C_MEM_REVISION_MAJOR_ADD, buff, 2))
+	{
+		return ERROR;
+	}
+	*minor = buff[1];
+	*major = buff[0];
+	return OK;
+}
+
+static int doFwRead(int argc, char *argv[]);
+const CliCmdType CMD_FW_READ =
+{
+	"fwrd",
+	2,
+	&doFwRead,
+	"\tfwrd:		Read firmware version\n",
+	"\tUsage:		4rel4in <stack> fwrd\n",
+	"",
+	"\tExample:		4rel4in 0 fwrd\n"};
+
+static int doFwRead(int argc, char *argv[])
+{
+
+	int major = 0;
+	int minor = 0;
+	int dev = 0;
+	
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+
+	if (argc == 3)
+	{
+		if (OK != fwGet(dev, &minor, &major))
+		{
+			printf("Fail to read!\n");
+			return IO_ERROR;
+		}
+		printf("Firmware version: %d.%d\n", major, minor);
+		return OK;
+	}
+	return ARG_CNT_ERR;
+}
 
 const CliCmdType *gCmdArray[] =
 {
@@ -255,6 +307,7 @@ const CliCmdType *gCmdArray[] =
 	&CMD_HELP,
 	&CMD_WAR,
 	&CMD_LIST,
+	&CMD_FW_READ,
 	&CMD_RELAY_TEST,
 	&CMD_RELAY_READ,
 	&CMD_RELAY_WRITE,
