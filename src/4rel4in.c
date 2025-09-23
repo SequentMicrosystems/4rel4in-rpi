@@ -10,7 +10,7 @@
 
 #define VERSION_BASE	(int)1
 #define VERSION_MAJOR	(int)1
-#define VERSION_MINOR	(int)1
+#define VERSION_MINOR	(int)2
 
 
 
@@ -337,6 +337,13 @@ const CliCmdType *gCmdArray[] =
 	&CMD_CRT_CAL,
 	&CMD_THERM_RES_READ,
 	&CMD_THERM_TEMP_READ,
+	&CMD_WDT_RELOAD,
+	&CMD_WDT_SET_PERIOD,
+	&CMD_WDT_GET_PERIOD,
+	&CMD_WDT_SET_INIT_PERIOD,
+	&CMD_WDT_GET_INIT_PERIOD,
+	&CMD_WDT_SET_OFF_PERIOD,
+	&CMD_WDT_GET_OFF_PERIOD,
 	NULL};//null terminated array of cli structure pointers
 
 int main(int argc, char *argv[])

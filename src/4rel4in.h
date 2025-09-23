@@ -27,6 +27,9 @@
 #define RESET_CALIBRATION_KEY 0x55
 #define ZERO_CURRENT_KEY 0x11
 
+#define WDT_RESET_SIGNATURE     0xca
+#define WDT_RESET_COUNT_SIGNATURE    0xbe
+#define WDT_MAX_OFF_INTERVAL_S 4147200 //48 days
 
 enum
 {
@@ -168,6 +171,13 @@ extern const CliCmdType CMD_CRT_CAL;
 extern const CliCmdType CMD_CRT_CAL_RESET;
 extern const CliCmdType CMD_THERM_RES_READ;
 extern const CliCmdType CMD_THERM_TEMP_READ;
+extern const CliCmdType CMD_WDT_RELOAD;
+extern const CliCmdType CMD_WDT_SET_PERIOD;
+extern const CliCmdType CMD_WDT_GET_PERIOD;
+extern const CliCmdType CMD_WDT_SET_INIT_PERIOD;
+extern const CliCmdType CMD_WDT_GET_INIT_PERIOD;
+extern const CliCmdType CMD_WDT_SET_OFF_PERIOD;
+extern const CliCmdType CMD_WDT_GET_OFF_PERIOD;
 extern const CliCmdType *gCmdArray[];
 
 #endif
