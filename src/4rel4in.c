@@ -10,7 +10,7 @@
 
 #define VERSION_BASE	(int)1
 #define VERSION_MAJOR	(int)1
-#define VERSION_MINOR	(int)3
+#define VERSION_MINOR	(int)4
 
 
 
@@ -295,11 +295,50 @@ static int doFwRead(int argc, char *argv[])
 			printf("Fail to read!\n");
 			return IO_ERROR;
 		}
-		printf("Firmware version: %d.%d\n", major, minor);
+		printf("Firmware version: %d.%02d\n", major, minor);
 		return OK;
 	}
 	return ARG_CNT_ERR;
 }
+
+static int doSave(int argc, char *argv[]);
+const CliCmdType CMD_SAVE =
+{
+	"save",
+	2,
+	&doSave,
+	"\tsave:		Save all configuration to flash. For Smart Relays firmware 1.06 and up \n",
+	"\tUsage:		4rel4in <stack> save\n",
+	"",
+	"\tExample:		4rel4in 0 save\n"};
+
+static int doSave(int argc, char *argv[])
+{
+	int dev = 0;
+	uint8_t buff[2] ;
+	uint16_t key = 0;
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+
+	if (argc == 3)
+	{
+		key = SAVE_SETINGS_KEY;
+		memcpy(buff, &key, 2);
+		if (OK != i2cMem8Write(dev, I2C_MEM_SAVE_SETINGS_CMD_ADD, buff, 2))
+		{
+			printf("Fail to write!\n");
+			return IO_ERROR;
+		}
+		printf("OK\n");
+		return OK;
+	}
+	return ARG_CNT_ERR;
+}
+
 
 const CliCmdType *gCmdArray[] =
 {
@@ -341,6 +380,8 @@ const CliCmdType *gCmdArray[] =
 	&CMD_CRT_CAL,
 	&CMD_THERM_RES_READ,
 	&CMD_THERM_TEMP_READ,
+	&CMD_THERM_BETA_READ,
+	&CMD_THERM_BETA_WRITE,
 	&CMD_WDT_RELOAD,
 	&CMD_WDT_SET_PERIOD,
 	&CMD_WDT_GET_PERIOD,
@@ -348,6 +389,7 @@ const CliCmdType *gCmdArray[] =
 	&CMD_WDT_GET_INIT_PERIOD,
 	&CMD_WDT_SET_OFF_PERIOD,
 	&CMD_WDT_GET_OFF_PERIOD,
+	&CMD_SAVE,
 	NULL};//null terminated array of cli structure pointers
 
 int main(int argc, char *argv[])

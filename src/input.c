@@ -1891,3 +1891,159 @@ static int doThermistorTempRead(int argc, char *argv[])
 	return ARG_CNT_ERR;
 }
 
+
+int thermGetBeta(int dev, u8 channel, int *val)
+{
+	u8 buff[COUNT_SIZE];
+	int16_t rawBeta = 0;
+
+	if (NULL == val)
+	{
+		return ERROR;
+	}
+	if ( (channel < CHANNEL_NR_MIN) || (channel > IN_CH_NO))
+	{
+		printf("Invalid input nr!\n");
+		return ERROR;
+	}
+	if (OK
+		!= i2cMem8Read(dev, I2C_MEM_TH1_B_COEF + (channel - 1) * CRT_SIZE, buff,
+			CRT_SIZE))
+	{
+		return ERROR;
+	}
+	memcpy(&rawBeta, buff, CRT_SIZE);
+	*val = (int)rawBeta;
+	return OK;
+}
+
+
+int thermSetBeta(int dev, u8 channel, int val)
+{
+	u8 buff[COUNT_SIZE];
+	int16_t rawBeta = 0;
+
+	if ( (channel < CHANNEL_NR_MIN) || (channel > IN_CH_NO))
+	{
+		printf("Invalid input nr!\n");
+		return ERROR;
+	}
+	if((val < 3000) || (val > 4500))
+	{
+		printf("Invalid value must be [3000..4500]\n");
+		return ERROR;
+	}
+	rawBeta = 0xffff & val;
+	memcpy(buff, &rawBeta, 2);
+	if (OK
+		!= i2cMem8Write(dev, I2C_MEM_TH1_B_COEF + (channel - 1) * CRT_SIZE, buff,
+			CRT_SIZE))
+	{
+		return ERROR;
+	}
+	return OK;
+}
+
+
+static int doThermistorBetaRead(int argc, char *argv[]);
+const CliCmdType CMD_THERM_BETA_READ =
+	{
+		"thbrd",
+		2,
+		&doThermistorBetaRead,
+		"\tthbrd:		Read the Thermistor B coeficient settings\n",
+		"\tUsage:		4rel4in <stack> thbrd <channel[1..4]>;  \n",
+		"",
+		"\tExample:		4rel4in 0 thbrd 2; Read config B parameter for Thermistor channel #2\n"};
+
+static int doThermistorBetaRead(int argc, char *argv[])
+{
+	int pin = 0;
+	int val = 0;
+	int dev = 0;
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+	if(getHw() < 10)
+	{
+		printf("Not available for this card type!\n");
+		return ERROR;
+	}
+	if (argc == 4)
+	{
+		pin = atoi(argv[3]);
+		if ( (pin < CHANNEL_NR_MIN) || (pin > IN_CH_NO))
+		{
+			printf("Input channel number value out of range!\n");
+			return ERROR;
+		}
+
+		if (OK != thermGetBeta(dev, pin, &val))
+		{
+			printf("Fail to read!\n");
+			return IO_ERROR;
+		}
+
+		printf("%d\n", val);
+
+		return OK;
+	}
+
+	return ARG_CNT_ERR;
+}
+
+
+static int doThermistorBetaWrite(int argc, char *argv[]);
+const CliCmdType CMD_THERM_BETA_WRITE =
+	{
+		"thbwr",
+		2,
+		&doThermistorBetaWrite,
+		"\tthbwr:		Write the Thermistor B coeficient settings\n",
+		"\tUsage:		4rel4in <stack> thbwr <channel[1..4]> <B[3000..4500]>;  \n",
+		"",
+		"\tExample:		4rel4in 0 thbwr 2 3435; Write config B parameter for Thermistor channel #2 to 3435K\n"};
+
+static int doThermistorBetaWrite(int argc, char *argv[])
+{
+	int pin = 0;
+	int val = 0;
+	int dev = 0;
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+	if(getHw() < 10)
+	{
+		printf("Not available for this card type!\n");
+		return ERROR;
+	}
+	if (argc == 5)
+	{
+		pin = atoi(argv[3]);
+		if ( (pin < CHANNEL_NR_MIN) || (pin > IN_CH_NO))
+		{
+			printf("Input channel number value out of range!\n");
+			return ERROR;
+		}
+
+		val = atoi(argv[4]);
+
+		if (OK != thermSetBeta(dev, pin, val))
+		{
+			printf("Fail to set!\n");
+			return IO_ERROR;
+		}
+
+		printf("OK\n");
+
+		return OK;
+	}
+
+	return ARG_CNT_ERR;
+}

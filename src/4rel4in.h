@@ -31,6 +31,8 @@
 #define WDT_RESET_COUNT_SIGNATURE    0xbe
 #define WDT_MAX_OFF_INTERVAL_S 4147200 //48 days
 
+#define SAVE_SETINGS_KEY 0x7A5E
+
 enum
 {
 	I2C_MEM_RELAY_VAL = 0,
@@ -97,6 +99,13 @@ enum
 	I2C_MEM_TH_TEMP_END_ADD = I2C_MEM_TH_TEMP_START_ADD + ANALOG_VAL_SIZE * IN_CH_NO,
 	I2C_MEM_RELAY_FAILSAFE_EN_ADD = I2C_MEM_TH_TEMP_END_ADD,
 	I2C_MEM_RELAY_FAILSAFE_VAL_ADD,
+	I2C_MEM_MODBUS_FAILSAFE_TIMEOUT_ADD, // 2 bytes expressed in seconds
+	I2C_MEM_TH1_B_COEF = I2C_MEM_MODBUS_FAILSAFE_TIMEOUT_ADD + 2,
+	I2C_MEM_TH2_B_COEF = I2C_MEM_TH1_B_COEF + 2,
+	I2C_MEM_TH3_B_COEF = I2C_MEM_TH2_B_COEF + 2,
+	I2C_MEM_TH4_B_COEF = I2C_MEM_TH3_B_COEF + 2,
+
+	I2C_MEM_SAVE_SETINGS_CMD_ADD = 254,//2 bytes to coresond to the modbus register 40000
 
 	SLAVE_BUFF_SIZE = 256,
 };
@@ -179,6 +188,8 @@ extern const CliCmdType CMD_CRT_CAL;
 extern const CliCmdType CMD_CRT_CAL_RESET;
 extern const CliCmdType CMD_THERM_RES_READ;
 extern const CliCmdType CMD_THERM_TEMP_READ;
+extern const CliCmdType CMD_THERM_BETA_READ;
+extern const CliCmdType CMD_THERM_BETA_WRITE;
 extern const CliCmdType CMD_WDT_RELOAD;
 extern const CliCmdType CMD_WDT_SET_PERIOD;
 extern const CliCmdType CMD_WDT_GET_PERIOD;
