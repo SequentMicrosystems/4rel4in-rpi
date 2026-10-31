@@ -2,8 +2,8 @@
 
 # Modbus
 
-The Sequent Microsystems [Smart Relays with Universal Inputs 8-Layer Stackable HAT for Raspberry Pi](https://sequentmicrosystems.com/products/smart-relays-with-universal-inputs-for-raspberry-pi) can be accessed through the Modbus RTU protocol over the RS-485 port.
-You can set-up the RS-485 port with **4rel4in** command.
+You can access the Sequent Microsystems [Smart Relays with Universal Inputs 8-Layer Stackable HAT for Raspberry Pi](https://sequentmicrosystems.com/products/smart-relays-with-universal-inputs-for-raspberry-pi) via the Modbus RTU protocol over the RS-485 port.
+You can set up the RS-485 port with the **4rel4in** command.
 
 Example:
 ```bash
@@ -17,7 +17,7 @@ Display the full set of options
 
 ## Slave Address
 The three address jumpers have a dual purpose. 
-When the card is accessed from a Raspberry Pi, the jumpers define the I2C address offset, allowing stacking of up to 8 cards.
+When a Raspberry Pi accesses the card, the jumpers define the I2C address offset, allowing stacking of up to 8 cards.
 When the card is accessed through MODBUS protocol over the RS485 port, the jumpers define the offset of the RS485 base address set by the software.
 
 ## Modbus object types
