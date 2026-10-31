@@ -41,12 +41,12 @@ Access level: Read/Write, Size: 1 bit
 |	LED2|0010 | 0x09 | LED2  turn coil|
 |	LED3|0011 | 0x0a | LED3  turn coil|
 |	LED4|0012 | 0x0b | LED4  turn coil|
-|	IN1_COUNT_ENABLE|0013 | 0x0c | Counter enable on input #1|
-|	IN2_COUNT_ENABLE|0014 | 0x0d |Counter enable on input #2|
-|	IN3_COUNT_ENABLE|0015 | 0x0e |Counter enable on input #3|
-|	IN4_COUNT_ENABLE|0016 | 0x0f |Counter enable on input #4|
-|	ENCODER1_ENABLE| 0017 | 0x10 | Encoder enable on inputs #1/2|
-|	ENCODER2_ENABLE| 0018 | 0x11 | Encoder enable on inputs #3/4|
+|	IN1_COUNT_EN |0013 | 0x0c | Counter enable on input #1|
+|	IN2_COUNT_EN |0014 | 0x0d |Counter enable on input #2|
+|	IN3_COUNT_EN |0015 | 0x0e |Counter enable on input #3|
+|	IN4_COUNT_EN |0016 | 0x0f |Counter enable on input #4|
+|	ENCODER1_EN | 0017 | 0x10 | Encoder enable on inputs #1/2|
+|	ENCODER2_EN| 0018 | 0x11 | Encoder enable on inputs #3/4|
 | COIL_RL1_FS_EN | 0019 | 0x12 | Failsafe fuction enable for relay #1 | 
 | COIL_RL2_FS_EN | 0020 | 0x13 | Failsafe fuction enable for relay #2 | 
 | COIL_RL3_FS_EN | 0021 | 0x14 | Failsafe fuction enable for relay #3 | 
